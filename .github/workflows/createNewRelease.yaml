@@ -82,48 +82,11 @@ jobs:
     with:
       container-tag: ${{ needs.tag-release.outputs.version }}
 
-  # Create updated PHDI docs for the latest release
-  generate-and-update-phdi-docs:
-    needs:
-      - tag-release
-      - build-containers-for-release
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: "0"
-          ref: ${{ needs.tag-release.outputs.version }}
-
-      - name: Install poetry and dependencies
-        run: |
-          pip install poetry
-          poetry install
-
-      - name: Set environment variable for pdoc
-        run: echo "PDOC_ALLOW_EXEC=1" >> $GITHUB_ENV
-
-      - name: Clear Poetry Cache
-        run: |
-          poetry cache clear pypi --all
-          poetry cache clear virtualenvs --all
-
-      - name: Generate docs and move to docs branch
-        run: |
-          poetry run pdoc ./phdi -o ./docs/${{ needs.tag-release.outputs.version }}/sdk
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: phdi-docs
-          path: ./docs/${{ needs.tag-release.outputs.version }}/sdk
-
   # Create updated container docs for the latest release
   generate-and-update-container-docs:
     needs:
       - tag-release
       - list-containers
-      - generate-and-update-phdi-docs
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -180,7 +143,6 @@ jobs:
   commit-docs:
     needs:
       - tag-release
-      - generate-and-update-phdi-docs
       - generate-and-update-container-docs
     permissions:
       contents: write
