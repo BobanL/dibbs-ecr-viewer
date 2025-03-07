@@ -27,10 +27,6 @@ jobs:
     strategy:
       matrix:
         container-to-build: ${{fromJson(needs.list-containers.outputs.all-containers)}}
-    permissions:
-      contents: "read"
-      id-token: "write"
-      packages: "write"
     outputs:
       version: ${{ steps.meta.outputs.version }}
     steps:
