@@ -1,7 +1,7 @@
 name: Create New Release
 on:
-  push:
-    tags: ["v*.*.*"]
+  release:
+    types: [published]
 
 # Run all tests before making a release
 jobs:
