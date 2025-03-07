@@ -15,6 +15,10 @@ on:
     paths-ignore:
       - pyproject.toml
   workflow_dispatch:
+    inputs:
+      id:
+        description: "An identifier to help determine which run was initiated"
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
