@@ -129,7 +129,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: container-docs
+          name: container-docs-${{ matrix.container }}
           path: ./docs/${{ needs.build-containers-for-release.outputs.version }}/containers
 
   commit-docs:
@@ -147,7 +147,8 @@ jobs:
       - name: Download container docs from artifacts
         uses: actions/download-artifact@v4.1.9
         with:
-          name: container-docs
+          name: container-docs-*
+          merge-multiple: true
           path: ./docs/${{ needs.build-containers-for-release.outputs.version }}/containers
 
       - name: Copy to latest folder
