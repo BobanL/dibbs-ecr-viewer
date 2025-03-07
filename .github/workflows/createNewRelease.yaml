@@ -22,7 +22,9 @@ jobs:
   # Rebuild all containers for the new release
   build-containers-for-release:
     name: Build containers
-    needs: list-containers
+    needs:
+      - list-containers
+      - test-for-release
     runs-on: ubuntu-latest
     strategy:
       matrix:
