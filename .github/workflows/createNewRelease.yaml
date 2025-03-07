@@ -144,12 +144,6 @@ jobs:
         with:
           ref: docs
 
-      - name: Download phdi docs from artifacts
-        uses: actions/download-artifact@v4.1.9
-        with:
-          name: phdi-docs
-          path: ./docs/${{ needs.build-containers-for-release.outputs.version }}/sdk
-
       - name: Download container docs from artifacts
         uses: actions/download-artifact@v4.1.9
         with:
@@ -159,9 +153,7 @@ jobs:
       - name: Copy to latest folder
         run: |
           rm -rf ./docs/latest
-          mkdir -p ./docs/latest/sdk
           mkdir -p ./docs/latest/containers
-          cp -r ./docs/${{ needs.build-containers-for-release.outputs.version }}/sdk/* ./docs/latest/sdk
           cp -r ./docs/${{ needs.build-containers-for-release.outputs.version }}/containers/* ./docs/latest/containers
 
       - name: Commit New Documentation
