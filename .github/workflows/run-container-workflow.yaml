@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       # Since gh workflow run does not return an ID, there is a very small chance that this may return an incorrect RUN_ID
-      # This functionality should be release by Q2 2025: https://github.com/cli/cli/issues/4001#issuecomment-2558116235
+      # This functionality should be released by Q2 2025: https://github.com/cli/cli/issues/4001#issuecomment-2558116235
       - name: Run specified workflow
         id: trigger-workflow
         env:
