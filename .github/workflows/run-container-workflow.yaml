@@ -12,12 +12,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Since gh workflow run does not return an ID, there is a very small chance that this may return an incorrect RUN_ID
+      # This functionality should be release by Q2 2025: https://github.com/cli/cli/issues/4001#issuecomment-2558116235
       - name: Run specified workflow
         id: trigger-workflow
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RUN_ID=$(gh workflow run .github/workflows/container-${{ inputs.container }}.yaml --json databaseId --jq '.databaseId')
+          gh workflow run .github/workflows/container-${{ inputs.container }}.yaml
+          RUN_ID=$(gh run list --workflow=container-${{ inputs.container }}.yaml --event=workflow_dispatch --json databaseId --limit 1 --jq '.[0].databaseId')
           echo "RUN_ID=$RUN_ID" >> $GITHUB_OUTPUT
 
       - name: Wait for container workflow to complete
