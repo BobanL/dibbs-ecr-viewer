@@ -153,7 +153,7 @@ jobs:
       - name: Download container docs from artifacts
         uses: actions/download-artifact@v4.1.9
         with:
-          name: container-docs-*
+          pattern: container-docs-*
           merge-multiple: true
           path: ./docs/${{ needs.build-containers-for-release.outputs.version }}/containers
 
