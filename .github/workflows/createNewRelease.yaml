@@ -108,6 +108,8 @@ jobs:
 
       - name: Update Container Documentation
         env:
+          APP_VERSION: ${{ needs.build-containers-for-release.outputs.version }}
+          # Record Linkage
           MPI_DBNAME: testdb
           MPI_PASSWORD: pw
           MPI_DB_TYPE: postgres
@@ -116,8 +118,12 @@ jobs:
           MPI_PORT: 5432
           MPI_PATIENT_TABLE: patient
           MPI_PERSON_TABLE: person
+          # Orchestration
           TRIGGER_CODE_REFERENCE_URL: http://localhost:8086
-          APP_VERSION: ${{ needs.build-containers-for-release.outputs.version }}
+          VALIDATION_URL: http://localhost:8081
+          FHIR_CONVERTER_URL: http://localhost:8082
+          INGESTION_URL: http://localhost:8083
+          MESSAGE_PARSER_URL: http://localhost:8085
         run: |
           npm i -g redoc-cli
           CONTAINER=${{ matrix.container }}
