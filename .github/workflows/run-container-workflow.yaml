@@ -35,6 +35,7 @@ jobs:
           RUN_ID: ${{ steps.trigger-workflow.outputs.RUN_ID }}
         run: |
           echo "Waiting for workflow run ID: $RUN_ID to complete..."
+          echo "https://github.com/CDCgov/dibbs-ecr-viewer/actions/runs/$RUN_ID"
 
           # Wait for the workflow to complete
           while true; do
@@ -54,6 +55,7 @@ jobs:
           RUN_ID: ${{ steps.trigger-workflow.outputs.RUN_ID }}
         run: |
           conclusion=$(gh run view $RUN_ID --json conclusion --jq '.conclusion')
+          echo "https://github.com/CDCgov/dibbs-ecr-viewer/actions/runs/$RUN_ID"
 
           if [[ "$conclusion" != "success" ]]; then
             echo "Container workflow failed with conclusion: $conclusion"
