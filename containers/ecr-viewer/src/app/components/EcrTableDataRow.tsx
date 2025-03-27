@@ -11,7 +11,7 @@ import { noData } from "@/app/utils/data-utils";
 import { toSentenceCase } from "@/app/utils/format-utils";
 import { saveToSessionStorage } from "@/app/utils/storage-utils";
 
-import { ArrowDownward, ArrowForward } from "./Icon";
+import { ExpandMore } from "./Icon";
 
 /**
  * Formats a single row of the eCR table.
@@ -56,23 +56,25 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
     <>
       <tr className="main-row">
         <td>
-          <div className="display-flex">
+          <div className="patient-name-cell">
             {relatedEcrs.length > 0 && (
               <Button
                 aria-label="View Related eCRs"
-                className="usa-button"
+                className="usa-button expand-ecrs-button"
                 type="button"
                 onClick={() => setExpanded(!isExpanded)}
                 unstyled={true}
               >
-                {isExpanded ? (
-                  <ArrowDownward aria-hidden={true} className="square-3" />
-                ) : (
-                  <ArrowForward aria-hidden={true} className="square-3" />
-                )}
+                <ExpandMore
+                  aria-hidden={true}
+                  className="square-3 expand-icon"
+                  style={{
+                    transform: `rotate(${isExpanded ? "0" : "-90deg"})`,
+                  }}
+                />
               </Button>
             )}
-            <div className="patient-name-value">
+            <div className="patient-name-content">
               <Link onClick={saveUrl} href={`/view-data?id=${item.ecrId}`}>
                 {patient_first_name} {patient_last_name}
               </Link>
