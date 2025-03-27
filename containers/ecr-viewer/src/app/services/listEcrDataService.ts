@@ -105,16 +105,6 @@ async function listCoreEcrData(
       const mainQuery = trx.with("ecrs", (db) =>
         db
           .selectFrom("ecr_data")
-          .leftJoin(
-            "ecr_rr_conditions",
-            "ecr_data.eicr_id",
-            "ecr_rr_conditions.eicr_id",
-          )
-          .leftJoin(
-            "ecr_rr_rule_summaries",
-            "ecr_rr_conditions.uuid",
-            "ecr_rr_rule_summaries.ecr_rr_conditions_id",
-          )
           .select([
             "ecr_data.eicr_id as eicr_id",
             "ecr_data.patient_name_first",
@@ -127,7 +117,6 @@ async function listCoreEcrData(
             "ecr_data.fhir_reference_link as data_link",
             "ecr_data.eicr_version_number",
           ])
-          .distinct()
           .where((eb) =>
             generateCoreWhereStatement(
               eb,
@@ -164,16 +153,6 @@ async function listExtendedEcrData(
       const mainQuery = trx.with("ecrs", (db) =>
         db
           .selectFrom("ecr_data")
-          .leftJoin(
-            "ecr_rr_conditions",
-            "ecr_data.eicr_id",
-            "ecr_rr_conditions.eicr_id",
-          )
-          .leftJoin(
-            "ecr_rr_rule_summaries",
-            "ecr_rr_conditions.uuid",
-            "ecr_rr_rule_summaries.ecr_rr_conditions_id",
-          )
           .select([
             "ecr_data.eicr_id as eicr_id",
             "ecr_data.first_name",
@@ -185,7 +164,6 @@ async function listExtendedEcrData(
             "ecr_data.eicr_version_number",
             "ecr_data.fhir_reference_link as data_link",
           ])
-          .distinct()
           .where((eb) =>
             generateExtendedWhereStatement(
               eb,
