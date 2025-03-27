@@ -9,10 +9,18 @@ import { DateRangePeriod } from "@/app/utils/date-utils";
 
 import { formatDate, formatDateTime } from "./formatDateService";
 
+interface RelatedEcr {
+  eicr_id: string;
+  date_created: Date;
+  eicr_version_number: string | undefined;
+  set_id: string;
+}
+
 interface CommonMetadataModel {
   eicr_id: string;
   conditions: string[];
   rule_summaries: string[];
+  related_ecrs: RelatedEcr[];
   date_created: Date;
   set_id: string | undefined;
   eicr_version_number: string | undefined;
@@ -45,6 +53,7 @@ export interface EcrDisplay {
   date_created: string;
   eicr_set_id: string | undefined;
   eicr_version_number: string | undefined;
+  related_ecrs: RelatedEcr[];
 }
 
 /**
@@ -208,6 +217,7 @@ async function listExtendedEcrData(
 // It's a bit gross, but it reduces the code repetition substantially
 interface EcrsCte extends Common {
   ecrs: ecr_data;
+  ecr_sets: { set_id: string; max_version_number: number };
 }
 
 // Helper to execute the main ecr fetching CTE and also join in the conditions
@@ -221,7 +231,7 @@ const getMetaModelData = async <T extends CommonMetadataModel>(
   const rawEcrs = (await mainQuery
     .selectFrom("ecrs")
     .selectAll()
-    .execute()) as Omit<T, "conditions" | "rule_summaries">[];
+    .execute()) as Omit<T, "conditions" | "rule_summaries" | "related_ecrs">[];
 
   const conditions = await mainQuery
     .selectFrom("ecrs")
@@ -242,6 +252,17 @@ const getMetaModelData = async <T extends CommonMetadataModel>(
     .distinct()
     .execute();
 
+  const related_ecrs = await mainQuery
+    .selectFrom("ecr_sets")
+    .leftJoin("ecr_data", "ecr_sets.set_id", "ecr_data.set_id")
+    .select([
+      "ecr_data.eicr_id",
+      "ecr_data.set_id",
+      "ecr_data.eicr_version_number",
+      "ecr_data.date_created",
+    ])
+    .execute();
+
   const ecrs = rawEcrs.map((ecr) => {
     return {
       ...ecr,
@@ -256,6 +277,7 @@ const getMetaModelData = async <T extends CommonMetadataModel>(
             rule_summary && eicr_id === ecr.eicr_id,
         )
         .map(({ rule_summary }) => rule_summary) as string[],
+      related_ecrs: related_ecrs.filter(({ set_id }) => set_id === ecr.set_id),
     };
   }) as T[];
 
@@ -273,6 +295,7 @@ const processCommonMetadata = <T extends CommonMetadataModel>(object: T) => {
       : "",
     eicr_set_id: object.set_id,
     eicr_version_number: object.eicr_version_number,
+    related_ecrs: object.related_ecrs || [],
   };
 };
 

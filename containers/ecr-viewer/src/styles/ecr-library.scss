@@ -69,12 +69,17 @@
     font-weight: 400;
   }
 
-  &.usa-table--striped tbody tr:nth-child(odd) td {
+  tbody tr.main-row:nth-child(odd) td {
     background-color: white;
   }
 
-  &.usa-table--striped tbody tr:nth-child(even) td {
+  tbody tr.main-row:nth-child(even) td {
     background-color: color("base-lightest");
+  }
+
+  tbody tr.related-row td {
+    background-color: #f9f9f9;
+    border-top: 1px solid color("base-lighter");
   }
 
   thead {
@@ -92,12 +97,11 @@
   }
 
   tbody td {
-    border-top: 0;
-    border-bottom: 1px solid var(--ink, #111);
+    border-bottom: 0;
   }
 
-  tbody tr:last-child td {
-    border-bottom: none;
+  tbody tr:first-child td {
+    border-top: none;
   }
 }
 
