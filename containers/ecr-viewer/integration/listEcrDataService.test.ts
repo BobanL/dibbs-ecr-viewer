@@ -133,6 +133,7 @@ describe("listEcrDataService", () => {
           data_source: "DB",
           set_id: "123",
           eicr_version_number: "1",
+          related_ecrs: [],
         },
         {
           eicr_id: "ecr2",
@@ -146,6 +147,7 @@ describe("listEcrDataService", () => {
           data_source: "DB",
           set_id: "124",
           eicr_version_number: "1",
+          related_ecrs: [],
         },
       ];
 
@@ -161,6 +163,7 @@ describe("listEcrDataService", () => {
           rule_summaries: expect.arrayContaining(["Longer"]),
           eicr_set_id: "123",
           eicr_version_number: "1",
+          related_ecrs: [],
         },
         {
           ecrId: "ecr2",
@@ -176,6 +179,7 @@ describe("listEcrDataService", () => {
           ]),
           eicr_set_id: "124",
           eicr_version_number: "1",
+          related_ecrs: [],
         },
       ];
       const result = processCoreMetadata(responseBody);

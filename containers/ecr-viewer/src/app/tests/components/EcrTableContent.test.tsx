@@ -31,6 +31,14 @@ describe("EcrTableContent", () => {
     date_created: `2021-01-0${(i % 9) + 1}`,
     eicr_set_id: `123${i}`,
     eicr_version_number: i === 0 ? undefined : `${i}`,
+    related_ecrs: [
+      {
+        eicr_id: `id-rel-${i + 1}`,
+        set_id: `123${i}`,
+        eicr_version_number: `${i - 1}`,
+        date_created: new Date(`2021-01-0${(i % 9) + 1}`),
+      },
+    ],
   }));
   const mockDateRange = {
     startDate: new Date("12-01-2024"),

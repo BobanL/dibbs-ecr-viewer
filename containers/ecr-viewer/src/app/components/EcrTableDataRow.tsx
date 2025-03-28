@@ -43,10 +43,6 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
     </ul>
   );
 
-  const relatedEcrs = item.related_ecrs.filter(
-    ({ eicr_id }) => eicr_id !== item.ecrId,
-  );
-
   return (
     <>
       <motion.tr
@@ -56,7 +52,7 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
       >
         <td>
           <div className="patient-name-cell">
-            {relatedEcrs.length > 0 && (
+            {item.related_ecrs.length > 0 && (
               <Button
                 aria-label="View Related eCRs"
                 className="usa-button expand-ecrs-button text-base"
@@ -93,7 +89,7 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
       </motion.tr>
 
       {isExpanded &&
-        relatedEcrs.map((ecr) => (
+        item.related_ecrs.map((ecr) => (
           <RelatedRow
             key={ecr.eicr_id}
             ecr={ecr}

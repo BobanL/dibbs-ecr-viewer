@@ -110,22 +110,16 @@ async function listCoreEcrData(
   const res = await getDb<Core>()
     .transaction()
     .execute(async (trx) => {
-      const mainQuery = trx.with("ecrs", (db) =>
+      const mainQuery = trx.with("ecr_sets", (db) =>
         db
           .selectFrom("ecr_data")
-          .select((eb) => [
-            "ecr_data.eicr_id",
-            "ecr_data.patient_name_first",
-            "ecr_data.patient_name_last",
-            "ecr_data.patient_birth_date",
-            "ecr_data.date_created",
-            "ecr_data.report_date",
+          .select(({ eb }) => [
             "ecr_data.set_id",
-            "ecr_data.data_source",
             eb.fn
               .max(eb.cast<number>("ecr_data.eicr_version_number", "integer"))
               .as("max_version_number"),
           ])
+          .groupBy(["ecr_data.set_id"])
           .where((eb) =>
             generateCoreWhereStatement(
               eb,
@@ -133,14 +127,36 @@ async function listCoreEcrData(
               searchTerm,
               filterConditions,
             ),
+          ),
+      );
+
+      const ecrQuery = mainQuery.with("ecrs", (db) =>
+        db
+          .selectFrom("ecr_sets")
+          .leftJoin("ecr_data", (join) =>
+            join
+              .onRef("ecr_data.set_id", "=", "ecr_sets.set_id")
+              .on("ecr_sets.max_version_number", "=", (eb) =>
+                eb.cast<number>("ecr_data.eicr_version_number", "integer"),
+              ),
           )
+          .select([
+            "ecr_data.eicr_id",
+            "ecr_data.patient_name_first",
+            "ecr_data.patient_name_last",
+            "ecr_data.patient_birth_date",
+            "ecr_data.report_date",
+            "ecr_data.date_created",
+            "ecr_data.set_id",
+            "ecr_data.eicr_version_number",
+          ])
           .orderBy(generateCoreSortStatement(sortColumn, sortDirection))
           .offset(startIndex)
           .fetch(itemsPerPage),
       );
 
       return await getMetaModelData<CoreMetadataModel>(
-        mainQuery as unknown as Kysely<EcrsCte>,
+        ecrQuery as unknown as Kysely<EcrsCte>,
       );
     });
 
@@ -261,6 +277,14 @@ const getMetaModelData = async <T extends CommonMetadataModel>(
       "ecr_data.eicr_version_number",
       "ecr_data.date_created",
     ])
+    .orderBy(["ecr_data.set_id", "ecr_data.date_created desc"])
+    .where((eb) =>
+      eb(
+        "ecr_sets.max_version_number",
+        "!=",
+        eb.cast<number>("ecr_data.eicr_version_number", "integer"),
+      ),
+    )
     .execute();
 
   const ecrs = rawEcrs.map((ecr) => {
