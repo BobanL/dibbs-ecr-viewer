@@ -1,5 +1,7 @@
 import React from "react";
 
+import { LayoutGroup } from "motion/react";
+
 import { listEcrData } from "@/app/services/listEcrDataService";
 import { DateRangePeriod } from "@/app/utils/date-utils";
 
@@ -47,11 +49,13 @@ const EcrTableContent = async ({
   );
 
   return (
-    <tbody>
-      {data.map((item, index) => (
-        <EcrTableDataRow key={index} item={item} />
-      ))}
-    </tbody>
+    <LayoutGroup>
+      <tbody style={{ position: "relative" }}>
+        {data.map((item, index) => (
+          <EcrTableDataRow key={index} item={item} />
+        ))}
+      </tbody>
+    </LayoutGroup>
   );
 };
 

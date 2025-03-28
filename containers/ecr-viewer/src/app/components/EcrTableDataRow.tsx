@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 
 import { Button } from "@trussworks/react-uswds";
+import { motion } from "motion/react";
 import Link from "next/link";
 
 import { useQueryParam } from "@/app/hooks/useQueryParam";
@@ -25,7 +26,6 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
     toSentenceCase(item.patient_first_name) +
     " " +
     toSentenceCase(item.patient_last_name);
-  console.log({ related_ecrs: item.related_ecrs });
 
   const conditionsList = (
     <ul className="ecr-table-list">
@@ -49,7 +49,11 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
 
   return (
     <>
-      <tr className="main-row">
+      <motion.tr
+        className="main-row"
+        layout="position"
+        key={`row-${item.ecrId}`}
+      >
         <td>
           <div className="patient-name-cell">
             {relatedEcrs.length > 0 && (
@@ -86,10 +90,12 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
         <td>{item.patient_report_date || noData}</td>
         <td>{conditionsList}</td>
         <td>{summariesList}</td>
-      </tr>
+      </motion.tr>
+
       {isExpanded &&
         relatedEcrs.map((ecr) => (
           <RelatedRow
+            key={ecr.eicr_id}
             ecr={ecr}
             patientName={patientName}
             mainDateCreated={item.date_created}
@@ -113,7 +119,20 @@ const RelatedRow = ({
   const [ecrDate, ecrTime] = ecrDateTime.split(" ");
 
   return (
-    <tr className="related-row">
+    <motion.tr
+      className="related-row"
+      layout="position"
+      key={`row-${ecr.eicr_id}`}
+      initial={{ translateY: "-100%" }}
+      animate={{ translateY: 0 }}
+      exit={{ translateY: "-100%" }}
+      transition={{
+        type: "spring",
+        stiffness: 203,
+        damping: 25,
+      }}
+      style={{ position: "relative", zIndex: -1 }}
+    >
       <td>
         <UrlSavingLink ecrId={ecr.eicr_id}>{patientName}</UrlSavingLink>
         {ecr.eicr_version_number && (
@@ -123,9 +142,9 @@ const RelatedRow = ({
         )}
       </td>
       <td colSpan={4}>
-        {ecrDate} {ecrDate === mainDate ? <strong>{ecrTime}</strong> : ecrTime}
+        {ecrDate === mainDate ? <strong>{ecrTime}</strong> : ecrTime} {ecrDate}
       </td>
-    </tr>
+    </motion.tr>
   );
 };
 

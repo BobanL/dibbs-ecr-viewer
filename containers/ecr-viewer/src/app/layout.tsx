@@ -1,6 +1,8 @@
 import "@/styles/styles.scss";
 import { PublicEnvScript, env } from "next-runtime-env";
 
+import RespectMotionPreferences from "./components/RespectMotionPreferences";
+
 export const metadata = {
   title: "DIBBs eCR Viewer",
   description: "View your eCR data in an easy-to-understand format.",
@@ -31,18 +33,20 @@ export default function RootLayout({
     env("NEXT_PUBLIC_NON_INTEGRATED_VIEWER") === "true";
 
   return (
-    <html
-      lang="en"
-      style={{
-        "--patient-banner-buffer": isNonIntegratedViewer
-          ? PATIENT_BANNER_BUFFER
-          : 0,
-      }}
-    >
-      <head>
-        <PublicEnvScript nonce={{ headerKey: "x-nonce" }} />
-      </head>
-      <body className="overflow-x-auto">{children}</body>
-    </html>
+    <RespectMotionPreferences>
+      <html
+        lang="en"
+        style={{
+          "--patient-banner-buffer": isNonIntegratedViewer
+            ? PATIENT_BANNER_BUFFER
+            : 0,
+        }}
+      >
+        <head>
+          <PublicEnvScript nonce={{ headerKey: "x-nonce" }} />
+        </head>
+        <body className="overflow-x-auto">{children}</body>
+      </html>
+    </RespectMotionPreferences>
   );
 }
