@@ -9,7 +9,7 @@ import { DateRangePeriod } from "@/app/utils/date-utils";
 
 import { formatDate, formatDateTime } from "./formatDateService";
 
-interface RelatedEcr {
+export interface RelatedEcr {
   eicr_id: string;
   date_created: Date;
   eicr_version_number: string | undefined;

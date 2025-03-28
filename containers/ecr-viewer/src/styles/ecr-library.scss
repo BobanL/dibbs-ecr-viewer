@@ -63,30 +63,42 @@
     text-decoration: none;
   }
 
-  tbody tr td div {
-    font-size: 1rem;
-    font-style: normal;
-    font-weight: 400;
-  }
-
-  tbody tr.main-row {
-    &:nth-child(odd) td {
-      background-color: white;
+  tbody {
+    td {
+      border-bottom: 0;
     }
 
-    &:nth-child(even) td {
-      background-color: color("base-lightest");
+    tr:first-child td {
+      border-top: none;
     }
-  }
 
-  tbody tr.related-row td {
-    background-color: #f9f9f9;
-    border-top: 1px solid color("base-lighter");
+    tr.main-row {
+      &:nth-child(odd) td {
+        background-color: white;
+      }
+
+      &:nth-child(even) td {
+        background-color: color("base-lightest");
+      }
+
+      td:first-child {
+        padding-left: 0.25rem;
+      }
+    }
+
+    tr.related-row td {
+      background-color: #f9f9f9;
+      border-top: 1px solid color("base-lighter");
+
+      &:first-child {
+        padding-left: 4rem;
+      }
+    }
   }
 
   .patient-name-cell {
     display: grid;
-    grid-template-columns: 1.25rem auto;
+    grid-template-columns: 1.75rem auto;
     grid-template-areas: "button content";
 
     .expand-ecrs-button {
@@ -104,23 +116,17 @@
     th {
       background-color: color("base-lighter");
       border-bottom: 1px solid var(--Base-base, #71767a);
+
+      &:first-child {
+        padding-left: 2rem;
+      }
     }
   }
 
-  thead tr th:first-child {
-    padding-left: 2rem;
-  }
-
-  tbody td {
-    border-bottom: 0;
-  }
-
-  tbody tr:first-child td {
-    border-top: none;
-  }
-
-  .expand-icon {
-    transition: transform 0.2s ease-in-out;
+  @media (prefers-reduced-motion: no-preference) {
+    .expand-icon {
+      transition: transform 0.2s ease-in-out;
+    }
   }
 }
 
