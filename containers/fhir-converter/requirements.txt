@@ -2,7 +2,7 @@ fastapi>=0.109.1
 hl7
 httpx==0.28.1
 lxml
-pydantic>=2.0.0
+pydantic==2.0.0
 syrupy>=4.8.2
 uuid
 uvicorn>=0.18.0
