@@ -71,7 +71,7 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
           <div className="patient-name-cell">
             {item.related_ecrs.length > 0 && (
               <Button
-                aria-label="View Related eCRs"
+                aria-label={`${isExpanded ? "Hide" : "View"} Related eCRs`}
                 aria-controls={relatedEcrIdList}
                 className="usa-button expand-ecrs-button text-base"
                 type="button"
