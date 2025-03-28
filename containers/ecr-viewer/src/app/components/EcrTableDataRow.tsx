@@ -24,9 +24,19 @@ const transition = {
  * Formats a single row of the eCR table.
  * @param props - The properties passed to the component.
  * @param props.item - The eCR data to be formatted.
+ * @param props.numEcrs - The total number of eCRs being displayed right now
+ * @param props.index - The index of this eCR in that set
  * @returns A JSX table row element representing the eCR data.
  */
-export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
+export const EcrTableDataRow = ({
+  item,
+  numEcrs,
+  index,
+}: {
+  item: EcrDisplay;
+  numEcrs: number;
+  index: number;
+}) => {
   const [isExpanded, setExpanded] = useState(false);
   const patientName =
     toSentenceCase(item.patient_first_name) +
@@ -49,30 +59,24 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
     </ul>
   );
 
-  // Used to set aria-controls for the new rows upon expansion
-  let relatedEcrIdList = item.related_ecrs
-    .slice(0, 5)
-    .map(({ eicr_id }) => `related-row-${eicr_id}`)
-    .join(" ");
-
-  if (item.related_ecrs.length > 5) {
-    relatedEcrIdList = relatedEcrIdList + ` show-more-${item.ecrId}`;
-  }
-
   return (
     <>
       <motion.tr
         className="main-row"
+        role="row"
+        aria-level={1}
+        aria-setsize={numEcrs}
+        aria-posinset={index + 1}
+        aria-expanded={item.related_ecrs.length > 0 ? isExpanded : undefined}
         layout="position"
         transition={transition}
         key={`row-${item.ecrId}`}
       >
-        <td>
+        <td role="gridcell">
           <div className="patient-name-cell">
             {item.related_ecrs.length > 0 && (
               <Button
                 aria-label={`${isExpanded ? "Hide" : "View"} Related eCRs`}
-                aria-controls={relatedEcrIdList}
                 className="usa-button expand-ecrs-button text-base"
                 type="button"
                 onClick={() => setExpanded(!isExpanded)}
@@ -100,10 +104,10 @@ export const EcrTableDataRow = ({ item }: { item: EcrDisplay }) => {
             </div>
           </div>
         </td>
-        <td>{item.date_created}</td>
-        <td>{item.patient_report_date || noData}</td>
-        <td>{conditionsList}</td>
-        <td>{summariesList}</td>
+        <td role="gridcell">{item.date_created}</td>
+        <td role="gridcell">{item.patient_report_date || noData}</td>
+        <td role="gridcell">{conditionsList}</td>
+        <td role="gridcell">{summariesList}</td>
       </motion.tr>
 
       {isExpanded && <RelatedRows item={item} patientName={patientName} />}
@@ -118,7 +122,8 @@ const RelatedRows = ({
   item: EcrDisplay;
   patientName: string;
 }) => {
-  const [isExpanded, setIsExpanded] = useState(item.related_ecrs.length <= 5);
+  const numRows = item.related_ecrs.length;
+  const [isExpanded, setIsExpanded] = useState(numRows <= 5);
 
   const firstEcrs = item.related_ecrs.slice(0, 5);
   const remainingEcrs = item.related_ecrs.slice(5);
@@ -129,17 +134,19 @@ const RelatedRows = ({
 
   return (
     <>
-      {firstEcrs.map((ecr) => (
+      {firstEcrs.map((ecr, i) => (
         <RelatedRow
           key={ecr.eicr_id}
           ecr={ecr}
           patientName={patientName}
           mainDateCreated={item.date_created}
+          numRows={numRows}
+          index={i}
         />
       ))}
       {!isExpanded ? (
         <SlidingRow id={`show-more-${item.ecrId}`}>
-          <td colSpan={999}>
+          <td role="gridcell" colSpan={999}>
             <Button
               type="button"
               unstyled={true}
@@ -152,12 +159,14 @@ const RelatedRows = ({
           </td>
         </SlidingRow>
       ) : (
-        remainingEcrs.map((ecr) => (
+        remainingEcrs.map((ecr, i) => (
           <RelatedRow
             key={ecr.eicr_id}
             ecr={ecr}
             patientName={patientName}
             mainDateCreated={item.date_created}
+            numRows={numRows}
+            index={i + 5}
           />
         ))
       )}
@@ -169,18 +178,26 @@ const RelatedRow = ({
   patientName,
   ecr,
   mainDateCreated,
+  numRows,
+  index,
 }: {
   patientName: string;
   ecr: RelatedEcr;
   mainDateCreated: string;
+  numRows: number;
+  index: number;
 }) => {
   const mainDate = formatDate(mainDateCreated);
   const ecrDateTime = formatDateTime(ecr.date_created.toISOString());
   const [ecrDate, ecrTime] = ecrDateTime.split(" ");
 
   return (
-    <SlidingRow id={ecr.eicr_id}>
-      <td>
+    <SlidingRow
+      id={ecr.eicr_id}
+      aria-setsize={numRows}
+      aria-posinset={index + 1}
+    >
+      <td role="gridcell">
         <UrlSavingLink ecrId={ecr.eicr_id}>{patientName}</UrlSavingLink>
         {ecr.eicr_version_number && (
           <span className="usa-tag margin-x-1 padding-x-05 padding-y-2px bg-primary-lighter radius-md text-thin text-base-dark">
@@ -188,7 +205,7 @@ const RelatedRow = ({
           </span>
         )}
       </td>
-      <td colSpan={999}>
+      <td role="gridcell" colSpan={999}>
         {ecrDate === mainDate ? <strong>{ecrTime}</strong> : ecrTime} {ecrDate}
       </td>
     </SlidingRow>
@@ -198,19 +215,24 @@ const RelatedRow = ({
 const SlidingRow = ({
   children,
   id,
+  ...props
 }: {
   children: React.ReactNode;
   id: string;
+  props?: JSX.IntrinsicElements["tr"];
 }) => {
   return (
     <motion.tr
       className="related-row"
+      role="row"
+      aria-level={2}
       layout={true}
       id={`related-row-${id}`}
       key={`row-${id}`}
       initial={{ translateY: "-50%", opacity: 0 }}
       animate={{ translateY: 0, opacity: 1 }}
       transition={{ ...transition, delay: 0.1 }}
+      {...props}
     >
       {children}
     </motion.tr>

@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 
-import { Table } from "@trussworks/react-uswds";
 import { cookies } from "next/headers";
 import { env } from "next-runtime-env";
 
@@ -122,15 +121,13 @@ const HomePage = async ({
 const EcrTableWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="ecr-library-wrapper width-full overflow-auto">
-      <Table
-        bordered={false}
-        fullWidth={true}
-        fixed={true}
-        className="table-ecr-library margin-0"
-        data-testid="table"
+      <table
+        role="treegrid"
+        aria-label="eCR Library Results"
+        className="usa-table usa-table--borderless width-full table-ecr-library margin-0"
       >
         {children}
-      </Table>
+      </table>
     </div>
   );
 };
