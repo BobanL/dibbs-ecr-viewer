@@ -86,12 +86,14 @@
       }
     }
 
-    tr.related-row td {
-      background-color: #f9f9f9;
-      border-top: 1px solid color("base-lighter");
+    tr.related-row {
+      td {
+        background-color: #f9f9f9;
+        border-top: 1px solid color("base-lighter");
 
-      &:first-child {
-        padding-left: 4rem;
+        &:first-child {
+          padding-left: 4rem;
+        }
       }
     }
   }

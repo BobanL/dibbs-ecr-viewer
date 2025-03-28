@@ -277,7 +277,7 @@ const getMetaModelData = async <T extends CommonMetadataModel>(
       "ecr_data.eicr_version_number",
       "ecr_data.date_created",
     ])
-    .orderBy(["ecr_data.set_id", "ecr_data.date_created desc"])
+    .orderBy(["ecr_data.date_created desc"])
     .where((eb) =>
       eb(
         "ecr_sets.max_version_number",

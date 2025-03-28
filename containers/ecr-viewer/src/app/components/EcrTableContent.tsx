@@ -50,7 +50,7 @@ const EcrTableContent = async ({
 
   return (
     <LayoutGroup>
-      <tbody style={{ position: "relative" }}>
+      <tbody style={{ position: "relative", isolation: "isolate", zIndex: 0 }}>
         {data.map((item, index) => (
           <EcrTableDataRow key={index} item={item} />
         ))}
