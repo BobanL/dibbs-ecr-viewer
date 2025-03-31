@@ -122,6 +122,7 @@ const EcrTableWrapper = ({ children }: { children: React.ReactNode }) => {
         id="treegrid-table"
         role="treegrid"
         aria-label="eCR Library Results"
+        aria-readonly="true"
         className="usa-table usa-table--borderless width-full table-ecr-library margin-0"
       >
         {children}
