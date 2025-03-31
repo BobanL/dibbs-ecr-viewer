@@ -245,7 +245,7 @@ describe("listEcrDataService", () => {
         direction,
         testDateRange,
       );
-      expect(actual).toEqual([
+      expect(actual).toStrictEqual([
         {
           date_created: "12/02/2024 7:00\u00A0AM\u00A0EST",
           ecrId: "12345",
@@ -260,6 +260,7 @@ describe("listEcrDataService", () => {
           rule_summaries: ["Rule1"],
           eicr_set_id: "123",
           eicr_version_number: "1",
+          related_ecrs: [],
         },
       ]);
     });
@@ -276,7 +277,7 @@ describe("listEcrDataService", () => {
         direction,
         testDateRange,
       );
-      expect(actual).toEqual([
+      expect(actual).toStrictEqual([
         {
           date_created: "12/02/2024 7:00\u00A0AM\u00A0EST",
           ecrId: "12345",
@@ -291,6 +292,7 @@ describe("listEcrDataService", () => {
           rule_summaries: ["Rule1"],
           eicr_set_id: "123",
           eicr_version_number: "1",
+          related_ecrs: [],
         },
       ]);
     });
@@ -364,6 +366,7 @@ describe("listEcrDataService", () => {
           rule_summaries: ["Rule1"],
           eicr_set_id: "12345",
           eicr_version_number: "1.0",
+          related_ecrs: [],
         },
       ]);
     });
