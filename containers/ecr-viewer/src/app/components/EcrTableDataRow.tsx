@@ -128,10 +128,6 @@ const RelatedRows = ({
   const firstEcrs = item.related_ecrs.slice(0, 5);
   const remainingEcrs = item.related_ecrs.slice(5);
 
-  const remainingEcrIdList = remainingEcrs
-    .map(({ eicr_id }) => `related-row-${eicr_id}`)
-    .join(" ");
-
   return (
     <>
       {firstEcrs.map((ecr, i) => (
@@ -150,7 +146,6 @@ const RelatedRows = ({
             <Button
               type="button"
               unstyled={true}
-              aria-controls={remainingEcrIdList}
               onClick={() => setIsExpanded(!isExpanded)}
             >
               Show {remainingEcrs.length} more eCR
