@@ -56,10 +56,12 @@ describe("EcrTableContent", () => {
     it("should match snapshot", async () => {
       mockedListEcrData.mockResolvedValue(mockData);
       const table = document.createElement("table");
+      table.setAttribute("role", "treegrid");
       const { container } = render(
         await EcrTableContent({
           currentPage: 1,
           itemsPerPage: 25,
+          totalEcrCount: mockData.length,
           sortColumn: "date_created",
           sortDirection: "DESC",
           filterDates: mockDateRange,
@@ -74,10 +76,12 @@ describe("EcrTableContent", () => {
     it("should pass accessibility", async () => {
       mockedListEcrData.mockResolvedValue(mockData);
       const table = document.createElement("table");
+      table.setAttribute("role", "treegrid");
       const { container } = render(
         await EcrTableContent({
           currentPage: 1,
           itemsPerPage: 25,
+          totalEcrCount: mockData.length,
           sortColumn: "date_created",
           sortDirection: "DESC",
           filterDates: mockDateRange,
@@ -96,10 +100,12 @@ describe("EcrTableContent", () => {
     mockedListEcrData.mockResolvedValue(mockData);
 
     const table = document.createElement("table");
+    table.setAttribute("role", "treegrid");
     render(
       await EcrTableContent({
         currentPage: 1,
         itemsPerPage: 25,
+        totalEcrCount: mockData.length,
         sortColumn: "date_created",
         sortDirection: "DESC",
         filterDates: mockDateRange,

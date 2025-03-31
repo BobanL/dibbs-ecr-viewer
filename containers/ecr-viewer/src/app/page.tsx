@@ -96,6 +96,7 @@ const HomePage = async ({
                 <EcrTableContent
                   currentPage={config.page}
                   itemsPerPage={config.itemsPerPage}
+                  totalEcrCount={totalCount}
                   sortColumn={config.columnId}
                   sortDirection={config.direction}
                   searchTerm={config.search}
@@ -122,6 +123,7 @@ const EcrTableWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="ecr-library-wrapper width-full overflow-auto">
       <table
+        id="treegrid-table"
         role="treegrid"
         aria-label="eCR Library Results"
         className="usa-table usa-table--borderless width-full table-ecr-library margin-0"

@@ -385,9 +385,7 @@ export const getTotalEcrCount = async (
   searchTerm?: string,
   filterConditions?: string[],
 ): Promise<number> => {
-  const SCHEMA_TYPE = process.env.METADATA_DATABASE_SCHEMA;
-
-  switch (SCHEMA_TYPE) {
+  switch (dbSchema()) {
     case "core":
       return getTotalCoreEcrCount(filterDates, searchTerm, filterConditions);
     case "extended":
@@ -408,12 +406,7 @@ const getTotalCoreEcrCount = async (
 ): Promise<number> => {
   const result = await getDb<Core>()
     .selectFrom("ecr_data")
-    .leftJoin(
-      "ecr_rr_conditions",
-      "ecr_data.eicr_id",
-      "ecr_rr_conditions.eicr_id",
-    )
-    .select((eb) => eb.fn.count("ecr_data.eicr_id").distinct().as("count"))
+    .select((eb) => eb.fn.count("ecr_data.set_id").distinct().as("count"))
     .where((eb) =>
       generateCoreWhereStatement(eb, filterDates, searchTerm, filterConditions),
     )
@@ -429,12 +422,7 @@ const getTotalExtendedEcrCount = async (
 ): Promise<number> => {
   const result = await getDb<Extended>()
     .selectFrom("ecr_data")
-    .leftJoin(
-      "ecr_rr_conditions",
-      "ecr_data.eicr_id",
-      "ecr_rr_conditions.eicr_id",
-    )
-    .select((eb) => eb.fn.count("ecr_data.eicr_id").distinct().as("count"))
+    .select((eb) => eb.fn.count("ecr_data.set_id").distinct().as("count"))
     .where((eb) =>
       generateExtendedWhereStatement(
         eb,
