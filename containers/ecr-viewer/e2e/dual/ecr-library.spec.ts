@@ -136,4 +136,17 @@ test.describe("ecr library page", () => {
       await expect(page.getByLabel("Last 30 Days")).toBeVisible();
     });
   });
+
+  test.describe("eCR grouping", () => {
+    test("expanding group", async ({ page }) => {
+      await page.goto("/ecr-viewer");
+      await expect(
+        page.getByRole("button", { name: "View Related eCRs" }),
+      ).toBeVisible();
+      await page.getByRole("button", { name: "View Related eCRs" }).click();
+      await expect(
+        (await page.getByRole("row", { level: 2 }).all()).length,
+      ).toEqual(2);
+    });
+  });
 });
