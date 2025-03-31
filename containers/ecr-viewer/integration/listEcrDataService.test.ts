@@ -365,7 +365,7 @@ describe("listEcrDataService", () => {
           reportable_conditions: ["Condition1"],
           rule_summaries: ["Rule1"],
           eicr_set_id: "12345",
-          eicr_version_number: "1.0",
+          eicr_version_number: "1",
           related_ecrs: [],
         },
       ]);
