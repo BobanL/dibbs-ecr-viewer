@@ -172,11 +172,15 @@ const SideNav: React.FC = () => {
 
     const options = {
       root: null,
-      rootMargin: `-${topOffset}px 0px -100% 0px`,
+      rootMargin: `-${topOffset}px 0px -${
+        window.innerHeight - topOffset - 1
+      }px 0px`,
       threshold: 0,
     };
+    console.log({ options });
 
     const observer = new IntersectionObserver((entries) => {
+      console.log({ entries });
       // get the top/first thing that intersected
       for (const entry of entries) {
         if (entry.isIntersecting) {
