@@ -41,18 +41,12 @@ test.describe("viewer page", () => {
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 
-  test.describe.only("side nav", () => {
-    test("clicking each link scrolls and higlighlights", async ({ page }) => {
+  test.describe("side nav", () => {
+    test.beforeEach(async ({ page }) => {
       await page.goto(
         "/ecr-viewer/view-data?id=db734647-fc99-424c-a864-7e3cda82e703",
       );
       await page.getByText("Patient Name").first().waitFor();
-
-      const nav = await page.getByRole("navigation");
-      await expect(nav).toBeVisible();
-
-      const navLinks = await nav.getByRole("link").all();
-      expect(navLinks.length).toBe(22);
 
       // Make sure after collapsing and reopening, nav links still work
       await page.getByText("Collapse all sections").click();
@@ -60,6 +54,14 @@ test.describe("viewer page", () => {
 
       await page.getByText("Expand all sections").click();
       expect(page.getByText("Miscellaneous Notes")).toBeVisible();
+    });
+
+    test("clicking each link scrolls and higlighlights", async ({ page }) => {
+      const nav = await page.getByRole("navigation");
+      await expect(nav).toBeVisible();
+
+      const navLinks = await nav.getByRole("link").all();
+      expect(navLinks.length).toBe(22);
 
       // make sure clicking each link scrolls the heading and highlights the corresponding
       // side nav item
@@ -78,24 +80,10 @@ test.describe("viewer page", () => {
     test("scrolling through highlights links appropriately", async ({
       page,
     }) => {
-      await page.goto(
-        "/ecr-viewer/view-data?id=db734647-fc99-424c-a864-7e3cda82e703",
-      );
-      await page.getByText("Patient Name").first().waitFor();
-
       const nav = await page.getByRole("navigation");
       await expect(nav).toBeVisible();
 
       const navLinks = await nav.getByRole("link").all();
-      expect(navLinks.length).toBe(22);
-
-      // Make sure after collapsing and reopening, nav links still work
-      await page.getByText("Collapse all sections").click();
-      expect(page.getByText("Miscellaneous Notes")).not.toBeVisible();
-
-      await page.getByText("Expand all sections").click();
-      expect(page.getByText("Miscellaneous Notes")).toBeVisible();
-
       let navIndex = 1; // skip back to library link
       let lastY = "-1";
       while (true) {
