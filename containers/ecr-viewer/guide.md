@@ -10,11 +10,11 @@ category: Guides
 
 The eCR Viewer can be run in three modes.
 
-| MODE             | Features Available | Metadata Support | Authentication Supported                      | Environment Variables Needed                                                                                                                                                                   |
-| ---------------- | ------------------ | ---------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `INTEGRATED`     | Viewer             | None             | NBS                                           | [Base](#base-required), [Integrated Authentication](#integrated-authentication)                                                                                                                |
-| `NON_INTEGRATED` | Viewer, Library    | SQLSERVER or PG  | External authentication provider              | [Base](#base-required), [Non Integrated Authentication](#non-integrated-authentication), [Metadata Database](#metadata---ecr-library)                                                          |
-| `DUAL`           | Viewer, Library    | SQLSERVER or PG  | Both NBS and external authentication provider | [Base](#base-required), [Integrated Authentication](#integrated-authentication), [Non Integrated Authentication](#non-integrated-authentication), [Metadata Database](#metadata---ecr-library) |
+| Mode             | Features Available | Metadata Support | Authentication Supported                      | Environment Variables Needed                                                                                                                                                                                                        |
+| ---------------- | ------------------ | ---------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `INTEGRATED`     | Viewer             | None             | NBS                                           | [Base](#base-required), [eCR FHIR Storage](#ecr-fhir-storage), [Integrated Authentication](#integrated-authentication)                                                                                                              |
+| `NON_INTEGRATED` | Viewer, Library    | SQLSERVER or PG  | External authentication provider              | [Base](#base-required), [eCR FHIR Storage](#ecr-fhir-storage), [Non-Integrated Authentication](#non-integrated-authentication), [Metadata Database](#ecr-metadata-storage)                                                          |
+| `DUAL`           | Viewer, Library    | SQLSERVER or PG  | Both NBS and external authentication provider | [Base](#base-required), [eCR FHIR Storage](#ecr-fhir-storage), [Integrated Authentication](#integrated-authentication), [Non-Integrated Authentication](#non-integrated-authentication), [Metadata Database](#ecr-metadata-storage) |
 
 ### Integrated Architecture Diagram
 
@@ -36,7 +36,7 @@ flowchart LR
   ingestion -->|<code>/api/save-fhir-data</code>| container
 ```
 
-### Non Integrated Architecture Diagram
+### Non-Integrated Architecture Diagram
 
 ```mermaid
 flowchart LR
@@ -91,36 +91,31 @@ The full list of environment variables can be found in {@link NodeJS.ProcessEnv}
 
 ### Base Required
 
-These variables are required for all deployments. If variables are not set, this may cause issues running the app.
-{@includeCode ./environment.d.ts#required}
+Base required variables are ones required for all deployments regardless of mode or cloud environment. If variables are not set, this may cause issues starting the app. The variables can be found in {@link EnvironmentVariables.BaseRequired}.
 
-In addition, an storage container for the eCRs must be created. Certain values may need to be set depending on the storage provider used.
-{@includeCode ./environment.d.ts#aws}
-{@includeCode ./environment.d.ts#azure}
-{@includeCode ./environment.d.ts#gcp}
+### eCR Fhir Storage
+
+A storage container for the eCRs must be created for all deployments. Depending on the storage container used additional variables may be required. The variables can be found in {@link EnvironmentVariables.EcrStorage}.
 
 ### Authentication Setup
 
-Some form of authentication will be required on the application.
+Authentication is required when running any mode modes of the application.
 
 #### Integrated Authentication
 
-Integrated eCR Viewer will rely on NBS to authenticate the user.
-{@includeCode ./environment.d.ts#auth_integrated}
+Integrated eCR Viewer will rely on NBS to authenticate the user. The variables can be found in {@link EnvironmentVariables.Authentication}.
 
-#### Non Integrated Authentication
+#### Non-Integrated Authentication
 
-Non-Integrated will relies on an external authentication provider (like azure ad, entra, or keycloak).
-{@includeCode ./environment.d.ts#auth_non_integrated}
+Non-Integrated/Dual rely on an external authentication provider, like azure ad, entra, or keycloak. The variables can be found in {@link EnvironmentVariables.Authentication}.
 
-### Metadata - eCR Library
+### eCR Metadata Storage
 
-If using either `NON_INTEGRATED` or `DUAL`, metadata db environments will be required.
-{@includeCode ./environment.d.ts#metadata}
+In order to store metadata for the eCR Library, an eCR metadata database must be created. The variables can be found in {@link EnvironmentVariables.EcrMetadataStorage}
 
 ### Removed Environment Variables
 
-In order to maintain a history, these are variables that have been retired and no longer have a use in the app.
+These are variables that have been retired and no longer have a use in the app. These can be safely removed when installing the current version.
 
 | Name | Description | Version Removed | Date Removed |
 | ---- | ----------- | --------------- | ------------ |

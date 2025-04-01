@@ -1,64 +1,27 @@
 /* eslint-disable unused-imports/no-unused-vars */
-namespace NodeJS {
+namespace EnvironmentVariables {
   /**
-   * @categoryDescription eCR Storage - AWS
-   * These variables are used to configure the storage of FHIR data.
-   * @categoryDescription eCR Storage - AZURE
-   * These variables are used to configure the storage of FHIR data.
-   * @categoryDescription eCR Storage - GCP
-   * These variables are used to configure the storage of FHIR data.
-   * @categoryDescription Authentication - Standalone
-   * These variables are used to configure authentication for the eCR Library & Viewer.
-   * They are all required when running in `NON_INTEGRATED` or `DUAL`.
-   * @categoryDescription Authentication - NBS
+   * @categoryDescription Authentication - Integrated
    * These variables are used to configure authentication for the eCR Viewer.
-   * They are all required when running in `INTEGRATED` or `DUAL`.
-   * @categoryDescription Base Required
-   * These variables are required for the app to run properly. These are required for all deployments.
-   * @categoryDescription SQL Server
-   * These variables are deprecated. Please use eCR Library Metadata instead. {@link DATABASE_URL}
-   * @categoryDescription eCR Library Metadata
-   * These variables are used to configure the metadata database.
+   * All values are required when running in `INTEGRATED` or `DUAL`.
+   * @categoryDescription Authentication - Non-Integrated
+   * These variables are used to configure authentication for the eCR Library & Viewer.
+   * All values are required when running in `NON_INTEGRATED` or `DUAL`.
    */
-  interface ProcessEnv {
-    /**
-     * @ignore
-     * @description The version of the eCR Viewer. This value is set at build time.
-     */
-    APP_VERSION: string;
-    /**
-     * @ignore
-     * @description Next.js runtime environment.
-     */
-    NEXT_RUNTIME: string;
-    /**
-     * @ignore
-     * @description Determines the cloud storage provider used for eCR document storage. This value is set by CONFIG_NAME.
-     */
-    SOURCE: "s3" | "azure" | "gcp";
-    /**
-     * @ignore
-     * @description Database schema to use for metadata storage. Core has a small subset of Extended. This value is set by CONFIG_NAME.
-     */
-    METADATA_DATABASE_SCHEMA?: "core" | "extended";
-    /**
-     * @ignore
-     * @description Database type for metadata storage. This value is set by CONFIG_NAME.
-     */
-    METADATA_DATABASE_TYPE?: "postgres" | "sqlserver";
+  interface Authentication {
     //#region auth_non_integrated
     /**
-     * @category Authentication - Standalone
+     * @category Authentication - Non-Integrated
      * @description The application/client id used to idenitfy the client.
      */
     AUTH_CLIENT_ID?: string;
     /**
-     * @category Authentication - Standalone
+     * @category Authentication - Non-Integrated
      * @description The client secret that comes from the authentication provider.
      */
     AUTH_CLIENT_SECRET?: string;
     /**
-     * @category Authentication - Standalone
+     * @category Authentication - Non-Integrated
      * @description Additional information used during authentication process. For Azure AD, this will be the 'Tenant Id'. For Keycloak, this will be the url issuer including the realm.
      * @example Keycloak
      * https://my-keycloak-domain.com/realms/My_Realm
@@ -67,23 +30,33 @@ namespace NodeJS {
      */
     AUTH_ISSUER?: string;
     /**
-     * @category Authentication - Standalone
+     * @category Authentication - Non-Integrated
      * @description The authentication provider used for logging in. Either keycloak or ad.
      */
     AUTH_PROVIDER?: "keycloak" | "ad";
     /**
-     * @category Authentication - Standalone
+     * @category Authentication - Non-Integrated
      * @description Secret key used for NextAuth.js sessions.
      */
     NEXTAUTH_SECRET: string;
     //#endregion auth_non_integrated
     //#region auth_integrated
     /**
-     * @category Authentication - NBS
+     * @category Authentication - Integrated
      * @description Public key for NBS authentication.
      */
     NBS_PUB_KEY?: string;
     //#endregion auth_integrated
+  }
+  /**
+   * @categoryDescription eCR Storage - AWS
+   * These variables are used to configure the storage of FHIR data. These may not be required based on the permissions of the AWS service account.
+   * @categoryDescription eCR Storage - AZURE
+   * These variables are used to configure the storage of FHIR data. These may be required based on DefaultAzureCredential setup.
+   * @categoryDescription eCR Storage - GCP
+   * These variables are used to configure the storage of FHIR data. These may not be required if using Application Default Credentials
+   */
+  interface EcrStorage {
     //#region aws
     /**
      * @category eCR Storage - AWS
@@ -111,7 +84,7 @@ namespace NodeJS {
     /**
      * @category eCR Storage - AZURE
      * @description Azure Blob Storage container name where eCR documents are stored.
-     * @deprecated Since v3.1.0 - Use {@link ECR_BUCKET_NAME}
+     * @deprecated Since v3.1.0 - Use {@link BaseRequired.ECR_BUCKET_NAME}
      */
     AZURE_CONTAINER_NAME?: string;
     /**
@@ -140,6 +113,12 @@ namespace NodeJS {
      */
     GCP_API_ENDPOINT?: string;
     //#endregion gcp
+  }
+  /**
+   * @categoryDescription Base Required
+   * These variables are required for the app to run properly. These are required for all deployments.
+   */
+  interface BaseRequired {
     //#region required
     /**
      * @category Base Required
@@ -149,7 +128,7 @@ namespace NodeJS {
     BASE_PATH: string;
     /**
      * @category Base Required
-     * @description Configuration name that determines the type of authentication used, metadata database, and eCR document storage type.
+     * @description Configuration name that determines the type of eCR FHIR storage type, metadata database, and authentication used.
      */
     CONFIG_NAME:
       | "AWS_INTEGRATED"
@@ -178,6 +157,14 @@ namespace NodeJS {
      */
     ORCHESTRATION_URL: string;
     //#endregion required
+  }
+  /**
+   * @categoryDescription SQL Server
+   * These variables are deprecated. Please use eCR Library Metadata instead. {@link DATABASE_URL}
+   * @categoryDescription eCR Library Metadata
+   * These variables are used to configure the metadata database.
+   */
+  interface EcrMetadataStorage {
     //#region metadata
     /**
      * @category eCR Library Metadata
@@ -208,5 +195,40 @@ namespace NodeJS {
      */
     SQL_SERVER_USER?: string;
     //#endregion metadata
+  }
+}
+
+/* eslint-disable unused-imports/no-unused-vars */
+namespace NodeJS {
+  interface ProcessEnv
+    extends EnvironmentVariables.Authentication,
+      EnvironmentVariables.BaseRequired,
+      EnvironmentVariables.EcrMetadataStorage,
+      EnvironmentVariables.EcrStorage {
+    /**
+     * @ignore
+     * @description The version of the eCR Viewer. This value is set at build time.
+     */
+    APP_VERSION: string;
+    /**
+     * @ignore
+     * @description Next.js runtime environment. This value is set at runtime
+     */
+    NEXT_RUNTIME: string;
+    /**
+     * @ignore
+     * @description Determines the cloud storage provider used for eCR document storage. This value is set by CONFIG_NAME.
+     */
+    SOURCE: "s3" | "azure" | "gcp";
+    /**
+     * @ignore
+     * @description Database schema to use for metadata storage. Core has a small subset of Extended. This value is set by CONFIG_NAME.
+     */
+    METADATA_DATABASE_SCHEMA?: "core" | "extended";
+    /**
+     * @ignore
+     * @description Database type for metadata storage. This value is set by CONFIG_NAME.
+     */
+    METADATA_DATABASE_TYPE?: "postgres" | "sqlserver";
   }
 }
