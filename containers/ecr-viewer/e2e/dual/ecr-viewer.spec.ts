@@ -92,7 +92,7 @@ test.describe("viewer page", () => {
         // if (y === lastY) break; // we've hit the bottom of the page
         // lastY = y;
         await page.mouse.wheel(0, 10);
-        await new Promise((resolve) => setTimeout(resolve, 5));
+        // await new Promise((resolve) => setTimeout(resolve, 5));
 
         const className = await navLinks.nth(navIndex)?.getAttribute("class");
         if (className === "usa-current") {
