@@ -86,13 +86,8 @@ test.describe("viewer page", () => {
       const navLinks = await nav.getByRole("link");
       const numLinks = (await navLinks.all()).length;
       let navIndex = 1; // skip back to library link
-      // let lastY = "-1";
       while (navIndex < numLinks) {
-        // const y: string = await page.evaluate("window.scrollY");
-        // if (y === lastY) break; // we've hit the bottom of the page
-        // lastY = y;
         await page.mouse.wheel(0, 10);
-        // await new Promise((resolve) => setTimeout(resolve, 5));
 
         const className = await navLinks.nth(navIndex)?.getAttribute("class");
         if (className === "usa-current") {
