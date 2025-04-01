@@ -47,6 +47,14 @@ test.describe("viewer page", () => {
         "/ecr-viewer/view-data?id=db734647-fc99-424c-a864-7e3cda82e703",
       );
       await page.getByText("Patient Name").first().waitFor();
+    });
+
+    test("clicking each link scrolls and higlighlights", async ({ page }) => {
+      const nav = page.getByRole("navigation");
+      await expect(nav).toBeVisible();
+
+      const navLinks = await nav.getByRole("link").all();
+      expect(navLinks.length).toBe(22);
 
       // Make sure after collapsing and reopening, nav links still work
       await page.getByText("Collapse all sections").click();
@@ -54,14 +62,6 @@ test.describe("viewer page", () => {
 
       await page.getByText("Expand all sections").click();
       expect(page.getByText("Miscellaneous Notes")).toBeVisible();
-    });
-
-    test("clicking each link scrolls and higlighlights", async ({ page }) => {
-      const nav = await page.getByRole("navigation");
-      await expect(nav).toBeVisible();
-
-      const navLinks = await nav.getByRole("link").all();
-      expect(navLinks.length).toBe(22);
 
       // make sure clicking each link scrolls the heading and highlights the corresponding
       // side nav item
@@ -80,25 +80,27 @@ test.describe("viewer page", () => {
     test("scrolling through highlights links appropriately", async ({
       page,
     }) => {
-      const nav = await page.getByRole("navigation");
+      const nav = page.getByRole("navigation");
       await expect(nav).toBeVisible();
 
-      const navLinks = await nav.getByRole("link").all();
+      const navLinks = await nav.getByRole("link");
+      const numLinks = (await navLinks.all()).length;
       let navIndex = 1; // skip back to library link
       let lastY = "-1";
-      while (true) {
+      while (navIndex < numLinks) {
         const y: string = await page.evaluate("window.scrollY");
         if (y === lastY) break;
         lastY = y;
-        await page.mouse.wheel(0, 10);
+        await page.mouse.wheel(0, 15);
+        await new Promise((resolve) => setTimeout(resolve, 5));
 
-        const className = await navLinks.at(navIndex)?.getAttribute("class");
+        const className = await navLinks.nth(navIndex)?.getAttribute("class");
         if (className === "usa-current") {
           navIndex += 1;
         }
       }
 
-      expect(navIndex).toBe(navLinks.length);
+      expect(navIndex).toBe(numLinks);
     });
   });
 });
