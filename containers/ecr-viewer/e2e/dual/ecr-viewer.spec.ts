@@ -85,7 +85,7 @@ test.describe("viewer page", () => {
 
       const navLinks = await nav.getByRole("link");
       const numLinks = (await navLinks.all()).length;
-      let navIndex = 1; // skip back to library link
+      let navIndex = 1; // skip "back to library" link
       while (navIndex < numLinks) {
         await page.mouse.wheel(0, 10);
 
