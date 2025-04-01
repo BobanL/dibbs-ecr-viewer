@@ -89,10 +89,10 @@ test.describe("viewer page", () => {
       let lastY = "-1";
       while (navIndex < numLinks) {
         const y: string = await page.evaluate("window.scrollY");
-        if (y === lastY) break;
+        if (y === lastY) break; // we've hit the bottom of the page
         lastY = y;
         await page.mouse.wheel(0, 15);
-        await new Promise((resolve) => setTimeout(resolve, 5));
+        await new Promise((resolve) => setTimeout(resolve, 8));
 
         const className = await navLinks.nth(navIndex)?.getAttribute("class");
         if (className === "usa-current") {
