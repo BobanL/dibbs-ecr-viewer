@@ -53,12 +53,6 @@ jobs:
       - name: Run tests
         working-directory: ./containers/${{env.CONTAINER}}
         run: npm test
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ env.CONTAINER }}
 
   build-container:
     runs-on: ubuntu-latest
