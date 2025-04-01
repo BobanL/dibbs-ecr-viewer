@@ -97,11 +97,13 @@ namespace EnvironmentVariables {
     /**
      * @category eCR Storage - GCP
      * @description Google Cloud service account credentials JSON (stringified) for GCP deployments.
+     * Only required if not using Application Default Credentials.
      */
     GCP_CREDENTIALS?: string;
     /**
      * @category eCR Storage - GCP
      * @description Google Cloud project ID where resources are located.
+     * Only required if not using Application Default Credentials.
      */
     GCP_PROJECT_ID?: string;
     /**
