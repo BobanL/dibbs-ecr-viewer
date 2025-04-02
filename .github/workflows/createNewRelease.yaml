@@ -1,9 +1,8 @@
-name: Create New Release
+name: Deploy new image
 on:
   release:
     types: [published]
 
-# Run all tests before making a release
 jobs:
   list-containers:
     uses: ./.github/workflows/listContainers.yaml
@@ -20,7 +19,6 @@ jobs:
       ref_name: ${{ github.ref_name }}
     secrets: inherit
 
-  # Rebuild all containers for the new release
   build-containers-for-release:
     name: Build containers
     needs:
@@ -71,7 +69,6 @@ jobs:
           build-args: |
             APP_VERSION: ${{ steps.meta.outputs.version }}
 
-  # Create updated container docs for the latest release
   generate-and-update-python-container-docs:
     needs:
       - list-containers
