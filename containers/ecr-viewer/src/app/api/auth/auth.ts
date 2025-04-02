@@ -48,6 +48,7 @@ export const handler = NextAuth({
 
       if (callbackUrl) url = callbackUrl;
       if (url.startsWith("/")) return `${baseUrl}${url}`;
+      if (url.startsWith("abcd")) return `${baseUrl}${url}`;
       else if (url === baseUrl) return defaultUrl;
       else if (new URL(url).origin === baseUrl) return url;
       return defaultUrl;
