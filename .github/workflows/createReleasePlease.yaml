@@ -16,7 +16,7 @@ jobs:
       - uses: googleapis/release-please-action@v4
         with:
           # PAT token required to trigger createNewRelease
-          #   token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
+          token: ${{ secrets.RELEASE_PLEASE_PAT }}
           # this is a built-in strategy in release-please, see "Action Inputs"
           # for more options
           release-type: simple
