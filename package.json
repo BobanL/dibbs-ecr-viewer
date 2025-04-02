@@ -1,6 +1,6 @@
 {
   "name": "dibbs-ecr-viewer",
-  "version": "1.0.0",
+  "version": "4.0.0-beta0",
   "scripts": {
     "lint": "cd containers/ecr-viewer && eslint --ext=.ts,.tsx --fix . && cd ../..",
     "typecheck": "cd containers/ecr-viewer && tsc --noEmit && cd ../.."
